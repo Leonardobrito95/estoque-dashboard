@@ -1,0 +1,27 @@
+{
+  "name": "estoque-dashboard",
+  "version": "1.0.0",
+  "description": "Dashboard operacional de controle de estoque — Localweb",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "nodemon server/index.js",
+    "db:init": "node server/db/init.js",
+    "etl": "node server/etl/index.js",
+    "etl:mes": "node server/etl/index.js --mes",
+    "etl:dry": "node server/etl/index.js --dry-run",
+    "etl:watch": "nodemon --watch server/etl server/etl/index.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^4.19.2",
+    "mysql2": "^3.9.7",
+    "pg": "^8.13.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}

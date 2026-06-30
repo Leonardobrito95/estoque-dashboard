@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard de Estoque — Controle Operacional</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700&family=Barlow:wght@300;400;500&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+
+<body class="dashboard">
+
+  <!-- ======================================================
+       TOPBAR — Header global
+       ====================================================== -->
+  <header class="topbar" role="banner">
+
+    <!-- Marca -->
+    <div class="topbar__brand">
+      <span class="topbar__logo" aria-hidden="true">
+        <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M14 2L24.39 8V20L14 26L3.61 20V8L14 2Z" stroke="#f5890a" stroke-width="1.5" fill="rgba(245,137,10,0.1)"/>
+          <path d="M14 8L19.2 11V17L14 20L8.8 17V11L14 8Z" fill="#f5890a" opacity="0.7"/>
+        </svg>
+      </span>
+      <div class="topbar__title-group">
+        <h1 class="topbar__title">Controle de Estoque</h1>
+        <span class="topbar__subtitle">Sistema Operacional de Movimentação</span>
+      </div>
+    </div>
+
+    <div class="topbar__divider" aria-hidden="true"></div>
+
+    <!-- Filtros globais -->
+    <nav class="topbar__filters" aria-label="Filtros globais">
+      <div class="filter">
+        <label class="filter__label" for="filter-mes">Mês de Referência</label>
+        <select class="filter__control" id="filter-mes" name="mes">
+          <option value="todos">Todos os meses</option>
+        </select>
+      </div>
+
+      <div class="filter">
+        <label class="filter__label" for="filter-tecnico">Técnico</label>
+        <select class="filter__control" id="filter-tecnico" name="tecnico">
+          <option value="todos">Todos os técnicos</option>
+        </select>
+      </div>
+
+      <div class="filter">
+        <label class="filter__label" for="filter-cliente">Cliente</label>
+        <input class="filter__control" list="lista-clientes" id="filter-cliente" name="cliente" placeholder="Todos os clientes" autocomplete="off">
+        <datalist id="lista-clientes"></datalist>
+      </div>
+
+      <div class="filter">
+        <label class="filter__label" for="filter-tipo">Tipo</label>
+        <select class="filter__control" id="filter-tipo" name="tipo">
+          <option value="todos">Equipamento + Material</option>
+          <option value="equipamento">Equipamentos</option>
+          <option value="material">Materiais</option>
+        </select>
+      </div>
+
+      <button class="topbar__btn" id="btn-aplicar" type="button">
+        Aplicar
+      </button>
+    </nav>
+
+    <!-- Meta info -->
+    <div class="topbar__meta" aria-live="polite">
+      <span class="topbar__update-label">Última atualização</span>
+      <time class="topbar__update-time" id="last-update" aria-label="Hora da última atualização">--:--:--</time>
+    </div>
+
+  </header>
+
+
+  <!-- ======================================================
+       KPI STRIP — Indicadores-chave
+       ====================================================== -->
+  <section class="kpi-strip" aria-label="Indicadores-chave de desempenho">
+
+    <!-- KPI: Total em Estoque -->
+    <article class="kpi-card kpi-card--stock" aria-label="Total em Estoque">
+      <div class="kpi-card__icon" aria-hidden="true">
+        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 5H17M3 10H17M3 15H17" stroke="#4a90d9" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="1" y="3" width="18" height="14" rx="1.5" stroke="#4a90d9" stroke-width="1.2"/>
+        </svg>
+      </div>
+      <div class="kpi-card__body">
+        <div class="kpi-card__value" id="kpi-estoque">—</div>
+        <div class="kpi-card__label">Total em Estoque</div>
+      </div>
+      <span class="kpi-card__delta kpi-card__delta--up">itens</span>
+    </article>
+
+    <!-- KPI: Total de Saídas -->
+    <article class="kpi-card kpi-card--output" aria-label="Total de Saídas">
+      <div class="kpi-card__icon" aria-hidden="true">
+        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 3V13M10 13L6 9M10 13L14 9" stroke="#f5890a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M4 16H16" stroke="#f5890a" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="kpi-card__body">
+        <div class="kpi-card__value" id="kpi-saida">—</div>
+        <div class="kpi-card__label">Total de Saídas</div>
+      </div>
+      <span class="kpi-card__delta kpi-card__delta--down">mov.</span>
+    </article>
+
+    <!-- KPI: Consumo Médio -->
+    <article class="kpi-card kpi-card--avg" aria-label="Consumo Médio">
+      <div class="kpi-card__icon" aria-hidden="true">
+        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 14L7 9L10 12L14 7L17 10" stroke="#4a90d9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="17" cy="10" r="1.5" fill="#4a90d9"/>
+        </svg>
+      </div>
+      <div class="kpi-card__body">
+        <div class="kpi-card__value" id="kpi-consumo">—</div>
+        <div class="kpi-card__label">Consumo Médio</div>
+      </div>
+      <span class="kpi-card__delta kpi-card__delta--up">/ OS</span>
+    </article>
+
+    <!-- KPI: Divergências -->
+    <article class="kpi-card kpi-card--alert" aria-label="Divergências Identificadas">
+      <div class="kpi-card__icon" aria-hidden="true">
+        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 3L18 17H2L10 3Z" stroke="#e63946" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="M10 9V12" stroke="#e63946" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="10" cy="14.5" r="0.75" fill="#e63946"/>
+        </svg>
+      </div>
+      <div class="kpi-card__body">
+        <div class="kpi-card__value" id="kpi-divergencia">—</div>
+        <div class="kpi-card__label">Divergências</div>
+      </div>
+      <span class="kpi-card__delta kpi-card__delta--warn">detectadas</span>
+    </article>
+
+  </section>
+
+
+  <!-- ======================================================
+       WORKSPACE — Área principal de trabalho
+       ====================================================== -->
+  <main class="workspace" role="main">
+
+    <!-- ---- PRIMARY: Tabela + Gráficos ---- -->
+    <section class="workspace__primary" aria-label="Movimentações e gráficos">
+
+      <!-- Painel de dados (tabela) -->
+      <div class="data-panel">
+
+        <div class="data-panel__toolbar">
+          <h2 class="data-panel__title">Movimentações de Estoque</h2>
+          <div class="data-panel__tools">
+            <label class="sr-only" for="table-search">Buscar na tabela</label>
+            <input
+              class="data-panel__search"
+              type="search"
+              id="table-search"
+              placeholder="Buscar produto, OS, técnico…"
+              autocomplete="off"
+            >
+            <button class="data-panel__toggle" id="btn-so-diverg" type="button">
+              ⚠ Só Divergências
+            </button>
+            <span class="data-panel__badge">
+              <span id="badge-count">—</span> registros
+            </span>
+            <button class="data-panel__export" id="btn-export" type="button">
+              ↓ CSV
+            </button>
+          </div>
+        </div>
+
+        <div class="data-panel__scroll" role="region" aria-label="Tabela de movimentações" tabindex="0">
+          <table class="data-table" aria-label="Movimentações de estoque">
+            <thead class="data-table__head">
+              <tr>
+                <th class="data-table__cell data-table__cell--th" data-sort="os_id"          scope="col">OS ID</th>
+                <th class="data-table__cell data-table__cell--th" data-sort="status"         scope="col">Status</th>
+                <th class="data-table__cell data-table__cell--th" data-sort="id_produto"     scope="col">ID Prod.</th>
+                <th class="data-table__cell data-table__cell--th" data-sort="descricao"      scope="col">Descrição</th>
+                <th class="data-table__cell data-table__cell--th" data-sort="qtd_estoque"    scope="col">Estoque</th>
+                <th class="data-table__cell data-table__cell--th" data-sort="qtd_saida"      scope="col">Saída</th>
+                <th class="data-table__cell data-table__cell--th" data-sort="consumo_medio"  scope="col">Cons. Méd.</th>
+                <th class="data-table__cell data-table__cell--th"                            scope="col">Diferença</th>
+                <th class="data-table__cell data-table__cell--th" data-sort="tecnico_nome"   scope="col">Técnico</th>
+                <th class="data-table__cell data-table__cell--th" data-sort="os_assunto"     scope="col">Assunto OS</th>
+                <th class="data-table__cell data-table__cell--th" data-sort="cliente_nome"   scope="col">Cliente</th>
+                <th class="data-table__cell data-table__cell--th" data-sort="mes_referencia" scope="col">Mês</th>
+              </tr>
+            </thead>
+            <tbody class="data-table__body" id="table-body">
+              <!-- Linhas injetadas pelo dashboard.js -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Paginação -->
+        <nav class="pagination" id="pagination" aria-label="Paginação da tabela"></nav>
+
+      </div>
+      <!-- /data-panel -->
+
+      <!-- Gráficos -->
+      <div class="chart-row" aria-label="Gráficos analíticos">
+
+        <div class="chart-box">
+          <div class="chart-box__header">
+            <h3 class="chart-box__title">Consumo por Técnico</h3>
+          </div>
+          <canvas
+            class="chart-box__canvas"
+            id="chart-bar"
+            role="img"
+            aria-label="Gráfico de barras — Consumo por Técnico"
+          ></canvas>
+        </div>
+
+        <div class="chart-box">
+          <div class="chart-box__header">
+            <h3 class="chart-box__title">Evolução do Estoque</h3>
+          </div>
+          <canvas
+            class="chart-box__canvas"
+            id="chart-line"
+            role="img"
+            aria-label="Gráfico de linha — Evolução do Estoque por mês"
+          ></canvas>
+        </div>
+
+      </div>
+      <!-- /chart-row -->
+
+    </section>
+    <!-- /workspace__primary -->
+
+
+    <!-- ---- SIDEBAR: Detalhe OS + Alertas ---- -->
+    <aside class="workspace__sidebar" aria-label="Detalhes e alertas">
+
+      <!-- Detalhe da OS selecionada -->
+      <section class="detail-panel" aria-label="Detalhe da Ordem de Serviço">
+        <div class="detail-panel__header">
+          <h3 class="detail-panel__title">Detalhe da OS</h3>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <span class="detail-panel__badge" id="detail-os-id" aria-live="polite">—</span>
+            <button id="btn-close-detail" title="Fechar detalhe" style="background:transparent; border:none; color:#f5890a; cursor:pointer; font-size:1.5rem; display:none; padding:0; line-height:1;">&times;</button>
+          </div>
+        </div>
+        <div class="detail-panel__body" id="detail-body">
+          <p class="detail-panel__empty">
+            Selecione uma linha da tabela para visualizar os detalhes da Ordem de Serviço.
+          </p>
+        </div>
+      </section>
+
+      <!-- Alertas de divergências -->
+      <section class="alert-list" aria-label="Divergências detectadas" aria-live="polite">
+        <div class="alert-list__header">
+          <h3 class="alert-list__title">Divergências Detectadas</h3>
+          <span class="alert-list__count" id="alert-count" aria-label="Número de divergências">0</span>
+        </div>
+        <ul class="alert-list__items" id="alert-items" role="list">
+          <!-- Itens injetados pelo dashboard.js -->
+        </ul>
+      </section>
+
+    </aside>
+    <!-- /workspace__sidebar -->
+
+  </main>
+  <!-- /workspace -->
+
+
+  <!-- ======================================================
+       STATUSBAR — Rodapé com status de conexão
+       ====================================================== -->
+  <footer class="statusbar" role="contentinfo" aria-label="Status do sistema">
+
+    <div class="statusbar__connection">
+      <span class="statusbar__dot statusbar__dot--online" id="conn-dot" aria-hidden="true"></span>
+      <span class="statusbar__label" id="conn-label">Conectado — Localweb</span>
+    </div>
+
+    <div class="statusbar__info">
+      <span class="statusbar__item">Registros: <strong id="rec-count">—</strong></span>
+      <span class="statusbar__sep" aria-hidden="true">|</span>
+      <span class="statusbar__item">Sinc: <strong id="sync-time">—</strong></span>
+      <span class="statusbar__sep" aria-hidden="true">|</span>
+      <span class="statusbar__item">Dashboard v1.0.0</span>
+    </div>
+
+  </footer>
+
+  <!-- Módulo principal (ES6) -->
+  <script type="module" src="js/dashboard.js"></script>
+
+</body>
+</html>
