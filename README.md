@@ -1,17 +1,12 @@
-# 📦 Estoque Dashboard
+# Estoque Dashboard
 
-> Dashboard operacional de controle de estoque com pipeline ETL próprio: extrai movimentações e materiais do ERP (IXC/MariaDB), transforma e carrega num PostgreSQL otimizado para leitura, e serve um painel web com gráficos.
+Dashboard operacional de controle de estoque com pipeline ETL próprio: extrai movimentações e materiais do ERP (IXC/MariaDB), transforma e carrega num PostgreSQL otimizado para leitura, e serve um painel web com gráficos.
 
-![Node.js](https://img.shields.io/badge/Node.js-18+-339933?logo=nodedotjs&logoColor=white)
-![Express](https://img.shields.io/badge/Express-API-000000?logo=express&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-dashboard-336791?logo=postgresql&logoColor=white)
-![MariaDB](https://img.shields.io/badge/MariaDB-IXC-003545?logo=mariadb&logoColor=white)
-
-## 🎯 O problema
+## O problema que isso resolve
 
 O controle de estoque vivia dentro do ERP (IXC), pesado para consultas analíticas e sem uma visão consolidada de movimentação. Rodar relatório direto na base de produção era lento e arriscado.
 
-## 💡 A solução
+## O que o sistema faz
 
 Separar o operacional do analítico com um ETL dedicado:
 
@@ -28,18 +23,18 @@ Separar o operacional do analítico com um ETL dedicado:
 - **Load:** escrita idempotente no PostgreSQL, com modo `--dry-run` e `--mes`.
 - **Serve:** API Express e frontend com gráficos de movimentação e saldo.
 
-## 🛠️ Stack
+## Stack
 
 | Camada | Tecnologia |
 |---|---|
-| Runtime | **Node.js 18+** |
-| API | **Express** |
-| ETL | Scripts Node (`mysql2` para `pg`) |
-| Fonte | **MariaDB** (IXC) |
-| Destino | **PostgreSQL** |
+| Runtime | Node.js 18+ |
+| API | Express |
+| ETL | Scripts Node (mysql2 para pg) |
+| Fonte | MariaDB (IXC) |
+| Destino | PostgreSQL |
 | Frontend | HTML e JS (charts) |
 
-## 📂 Estrutura
+## Estrutura de diretórios
 
 ```
 server/
@@ -55,7 +50,7 @@ sql/schema.sql            # schema analítico
 js/ + styles/ + index.html # frontend
 ```
 
-## 🚀 Rodando localmente
+## Rodando localmente
 
 ```bash
 npm install
